@@ -1,18 +1,31 @@
 FROM mcr.microsoft.com/dotnet/core/sdk:3.1 AS build
-WORKDIR /app
-EXPOSE 6000
+WORKDIR /source
+
 # copy csproj and restore as distinct layers
 COPY *.sln .
 COPY WebAPI/*.csproj ./WebAPI/
-RUN dotnet restore
+COPY Random/*.csproj ./Random/
+RUN dotnet restore WebAPI/WebAPI.csproj
 
 # copy everything else and build app
 COPY WebAPI/. ./WebAPI/
-WORKDIR /app/WebAPI
-RUN dotnet publish -c Release -o out
+COPY Random/. ./Random/
+WORKDIR /source/WebAPI
+RUN dotnet build -c release --no-restore 
 
+FROM build AS publish
+RUN dotnet publish -c release --no-build -o /app
 
-FROM mcr.microsoft.com/dotnet/core/aspnet:3.1 AS runtime
+# final stage/image
+FROM mcr.microsoft.com/dotnet/core/runtime:3.1
 WORKDIR /app
-COPY --from=build /app/WebAPI/out ./
+COPY --from=publish /app .
 ENTRYPOINT ["dotnet", "WebAPI.dll"]
+
+
+## test stage -- exposes optional entrypoint
+## target entrypoint with: docker build --target test
+#FROM build AS test
+#WORKDIR /source/tests
+#COPY tests/ .
+#ENTRYPOINT ["dotnet", "test", "--logger:trx"]

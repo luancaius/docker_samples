@@ -1,11 +1,13 @@
 ﻿{
   "profiles": {
-    "WebAPI": {
+    "publicdev": {
       "commandName": "Project",
-      "applicationUrl": "http://localhost:5000",
+      "launchBrowser": false,
+      "applicationUrl": "http://+:3000",
       "environmentVariables": {
         "ASPNETCORE_ENVIRONMENT": "Development"
       }
     }
   }
 }
+
