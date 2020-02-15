@@ -11,7 +11,7 @@ RUN dotnet restore WebAPI/WebAPI.csproj
 COPY WebAPI/. ./WebAPI/
 COPY Random/. ./Random/
 WORKDIR /source/WebAPI
-RUN dotnet build -c release --no-restore 
+RUN dotnet build -c release
 
 FROM build AS publish
 RUN dotnet publish -c release --no-build -o /app
