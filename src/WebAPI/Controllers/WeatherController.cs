@@ -12,14 +12,11 @@ namespace WebAPI.Controllers
     public class WeatherController : ControllerBase
     {
         private IService _service;
-
+        private readonly ILogger<WeatherController> _logger;
         private static readonly string[] Summaries = new[]
         {
             "Freezing", "Bracing", "Chilly", "Cool", "Mild", "Warm", "Balmy", "Hot", "Sweltering", "Scorching"
         };
-
-        private readonly ILogger<WeatherController> _logger;
-
         public WeatherController(ILogger<WeatherController> logger, IService service)
         {
             _logger = logger;
@@ -36,6 +33,12 @@ namespace WebAPI.Controllers
                     Summary = Summaries[_service.RandomNumber(0, Summaries.Length)]
                 })
                 .ToArray();
+        }
+        
+        public int RandomNumber(int value1=0, int value2=100)
+        {
+            System.Random random = new System.Random();  
+            return random.Next(value1, value2);
         }
     }
 }
